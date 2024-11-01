@@ -1,6 +1,17 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default {
+  entry: './src/js/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
   mode: process.env.NODE_ENV || 'development',
   module: {
     rules: [
@@ -31,10 +42,10 @@ export default {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'template.html',
+      template: './src/index.html', // путь к вашему HTML-шаблону
     }),
   ],
-  output: {
-    clean: true,
-  },
+  // output: {
+  //   clean: true,
+  // },
 };
