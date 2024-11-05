@@ -9,7 +9,7 @@ export default {
   entry: './src/js/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'publick'),
+    path: path.resolve(__dirname, 'public'),
     clean: true,
   },
   mode: process.env.NODE_ENV || 'development',
