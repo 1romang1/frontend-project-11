@@ -39,6 +39,7 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
+    "on-change": "^5.0.1",
     "sass": "^1.80.5",
     "sass-loader": "^16.0.3",
     "yup": "^1.4.0"
