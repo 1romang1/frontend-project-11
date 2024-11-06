@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "sass": "^1.80.5",
-    "sass-loader": "^16.0.3"
+    "sass-loader": "^16.0.3",
+    "yup": "^1.4.0"
   }
 }
