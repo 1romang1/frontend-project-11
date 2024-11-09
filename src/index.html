@@ -1,22 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="src/scss/styles.scss" />
+    <title>RSS агрегатор</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="src/scss/styles.scss">
-  <title>RSS агрегатор</title>
-</head>
-
-<body>
-  <div class="container">
-    <form>
-      <input id="url-input" autofocus="" required="" name="url" aria-label="url" class="form-control w-100"
-        placeholder="ссылка RSS" autocomplete="off">
-      <button type="submit" class="btn btn-primary">Добавить</button>
-    </form>
-  </div>
-  <script src="./index.js"></script>
-</body>
-
+  <body>
+    <div class="container">
+      <form action class="rss-form text-body">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating">
+              <input
+                id="url-input"
+                autofocus
+                required
+                name="url"
+                aria-label="url"
+                class="form-control w-100"
+                placeholder="ссылка RSS"
+                autocomplete="off"
+              />
+              <label for="url-input">Ссылка RSS</label>
+            </div>
+          </div>
+          <div class="col-auto">
+            <button
+              type="submit"
+              aria-label="add"
+              class="h-100 btn btn-lg btn-primary px-sm-5"
+            >
+              Добавить
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script src="./index.js"></script>
+  </body>
 </html>
