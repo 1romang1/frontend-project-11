@@ -35,4 +35,9 @@ const validate = (url) => {
     .catch((error) => console.log(error.errors));
 };
 
+const elements = {
+  form: document.querySelector('form'),
+  submitButton: document.getElementById('url-input'),
+};
+console.log(elements.submitButton)
 validate(initialState.form.fields);
