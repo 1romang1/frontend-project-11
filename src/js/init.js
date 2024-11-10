@@ -35,9 +35,9 @@ const validate = (url) => {
     .catch((error) => console.log(error.errors));
 };
 
-const elements = {
+export const elements = {
   form: document.querySelector('form'),
-  submitButton: document.getElementById('url-input'),
+  urlInput: document.getElementById('url-input'),
 };
-console.log(elements.submitButton)
+// console.log(elements.submitButton)
 validate(initialState.form.fields);
