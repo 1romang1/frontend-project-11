@@ -1,43 +1,60 @@
-import * as yup from "yup";
+import onChange from 'on-change';
+import * as yup from 'yup';
+import { render } from './view.js';
 
 const initialState = {
-  addedUrls: ["https://yandex.ru"],
-//   url: "https://google.com",
+  addedUrls: [],
   addingUrlProcess: {
-    processState: "filing", // варианты: 'filling', 'error', 'added', 'addition'
+    processState: 'filing', // варианты: 'filling', 'error', 'added', 'addition'
     processError: null,
   },
   form: {
     valid: true,
     errors: {},
     fields: {
-      url: "https://google.com",
+      url: '',
     },
   },
+};
+
+const elements = {
+  form: document.querySelector('form'),
+  urlInput: document.getElementById('url-input'),
+  submitButton: document.querySelector('button'),
 };
 
 const schema = yup.object({
   url: yup
     .string()
-    .url("Ссылка должна быть валидным URL")
-    .required("Это поле обязательно для заполнения")
+    .url('Ссылка должна быть валидным URL')
+    .required('Это поле обязательно для заполнения')
     .test(
-      "unique-url",
-      "Ссылка уже существует",
-      (value) => !initialState.addedUrls.includes(value),
+      'unique-url',
+      'Ссылка уже существует',
+      (value) => !initialState.addedUrls.includes(value)
     ),
 });
 
 const validate = (url) => {
   schema
     .validate(url)
-    .then(() => console.log("фид валидный"))
+    .then(() => {})
     .catch((error) => console.log(error.errors));
 };
 
-export const elements = {
-  form: document.querySelector('form'),
-  urlInput: document.getElementById('url-input'),
+console.log('йопта!');
+
+// const watchedState = onChange(initialState, render());
+
+export default () => {
+  elements.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const urlInputValue = elements.urlInput.value;
+    const urlInputFeedback = document.createElement('div');
+    urlInputFeedback.classList.add('invalid-feedback');
+    urlInputFeedback.textContent = urlInputValue;
+
+    elements.form.after(urlInputFeedback);
+  });
 };
-// console.log(elements.submitButton)
-validate(initialState.form.fields);
