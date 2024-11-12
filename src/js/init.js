@@ -52,10 +52,6 @@ export default () => {
     e.preventDefault();
 
     const urlInputValue = elements.urlInput.value;
-    const urlInputFeedback = document.createElement('div');
-    urlInputFeedback.classList.add('invalid-feedback');
-    urlInputFeedback.textContent = urlInputValue;
-
-    elements.form.after(urlInputFeedback);
+    elements.feedbackElement.textContent = urlInputValue;
   });
 };
