@@ -21,6 +21,7 @@ const elements = {
   form: document.querySelector('form'),
   urlInput: document.getElementById('url-input'),
   submitButton: document.querySelector('button'),
+  feedbackElement: document.querySelector('.feedback'),
 };
 
 const schema = yup.object({
