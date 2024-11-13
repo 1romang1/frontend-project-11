@@ -1,16 +1,16 @@
 import onChange from 'on-change';
 import * as yup from 'yup';
-import isEmpty from 'lodash/isEmpty.js';
+// import isEmpty from 'lodash/isEmpty.js';
 import { render } from './view.js';
 
 const initialState = {
   addedUrls: [],
   addingUrlProcess: {
     processState: 'filing', // варианты: 'filling', 'error', 'added'
-    processError: null, // для сетевых ошибок
+    // processError: null, // для сетевых ошибок
   },
   form: {
-    valid: true,
+    // valid: true,
     errors: {},
     fields: {
       url: '',
@@ -44,7 +44,6 @@ export default () => {
     e.preventDefault();
 
     const urlInputValue = elements.urlInput.value;
-    console.log(urlInputValue);
     initialState.form.fields.url = urlInputValue;
 
     schema
@@ -58,8 +57,6 @@ export default () => {
       .catch((err) => {
         initialState.addingUrlProcess.processState = 'error';
         initialState.form.errors = err.message;
-        initialState.form.valid = isEmpty(initialState.form.errors);
-        console.log(initialState.form.errors);
       })
       .finally(() => {
         console.log(initialState);
