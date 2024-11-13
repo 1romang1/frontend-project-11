@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['dist/'],
+    ignores: ['public/', 'sandbox.js'],
   },
   {
     languageOptions: {
