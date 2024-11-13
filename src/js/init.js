@@ -1,12 +1,13 @@
 import onChange from 'on-change';
 import * as yup from 'yup';
+import isEmpty from 'lodash/isEmpty.js';
 import { render } from './view.js';
 
 const initialState = {
   addedUrls: [],
   addingUrlProcess: {
-    processState: 'filing', // варианты: 'filling', 'error', 'added', 'addition'
-    processError: null,
+    processState: 'filing', // варианты: 'filling', 'error', 'added'
+    processError: null, // для сетевых ошибок
   },
   form: {
     valid: true,
@@ -36,22 +37,32 @@ const schema = yup.object({
     ),
 });
 
-const validate = (url) => {
-  schema
-    .validate(url)
-    .then(() => {})
-    .catch((error) => console.log(error.errors));
-};
-
-console.log('йопта!');
-
-// const watchedState = onChange(initialState, render());
+// const watchedState = onChange(initialState, render(elements, initialState));
 
 export default () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const urlInputValue = elements.urlInput.value;
-    elements.feedbackElement.textContent = urlInputValue;
+    console.log(urlInputValue);
+    initialState.form.fields.url = urlInputValue;
+
+    schema
+      .validate(initialState.form.fields)
+      .then(() => {
+        initialState.addingUrlProcess.processState = 'added'; // меняем статус процесса для render()
+        initialState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
+        initialState.form.fields.url = ''; // очищаем поле ввода
+        initialState.form.errors = {}; // сбрасываем ошибки
+      })
+      .catch((err) => {
+        initialState.addingUrlProcess.processState = 'error';
+        initialState.form.errors = err.message;
+        initialState.form.valid = isEmpty(initialState.form.errors);
+        console.log(initialState.form.errors);
+      })
+      .finally(() => {
+        console.log(initialState);
+      });
   });
 };
