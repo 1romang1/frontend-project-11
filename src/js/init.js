@@ -1,5 +1,6 @@
 import onChange from 'on-change';
 import * as yup from 'yup';
+import i18next from 'i18next';
 // import isEmpty from 'lodash/isEmpty.js';
 import render from './view.js';
 
