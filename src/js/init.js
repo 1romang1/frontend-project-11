@@ -1,6 +1,6 @@
 import onChange from 'on-change';
 import * as yup from 'yup';
-import i18next from 'i18next';
+// import i18next from 'i18next';
 // import isEmpty from 'lodash/isEmpty.js';
 import render from './view.js';
 
@@ -18,16 +18,24 @@ const initialState = {
     },
   },
 };
+
+yup.setLocale({
+  string: {
+    required: 'Это поле обязательно для заполнения',
+    url: 'Ссылка должна быть валидным URL',
+    notOneOf: 'Ссылка уже существует',
+  },
+  // mixed: {
+  //   notOneOf: 'Ссылка уже существует',
+  // },
+});
+
 const schema = yup.object({
   url: yup
     .string()
-    .url('Ссылка должна быть валидным URL')
-    .required('Это поле обязательно для заполнения')
-    .test(
-      'unique-url',
-      'Ссылка уже существует',
-      (value) => !initialState.addedUrls.includes(value)
-    ),
+    .url()
+    .required()
+    .notOneOf(initialState.addedUrls),
 });
 
 export default () => {
@@ -60,6 +68,7 @@ export default () => {
       .finally(() => {
         console.log(initialState);
         console.log(elements);
+        console.log(initialState.addedUrls)
       });
   });
 };
