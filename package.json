@@ -39,7 +39,7 @@
     "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
-    "i18next": "^24.0.2",
+    "i18next": "^24.0.5",
     "on-change": "^5.0.1",
     "sass": "^1.80.5",
     "sass-loader": "^16.0.3",
