@@ -5,22 +5,22 @@ import i18next from 'i18next';
 import render from './view.js';
 import resources from '../locales/index.js';
 
-const initialState = {
-  addedUrls: [],
-  addingUrlProcess: {
-    processState: 'filing', // варианты: 'filling', 'error', 'added'
-    // processError: null, // для сетевых ошибок
-  },
-  form: {
-    // valid: true,
-    errors: {},
-    fields: {
-      url: '',
-    },
-  },
-};
-
 export default () => {
+  const initialState = {
+    addedUrls: [],
+    addingUrlProcess: {
+      processState: 'filling', // варианты: 'filling', 'error', 'added'
+      // processError: null, // для сетевых ошибок
+    },
+    form: {
+      // valid: true,
+      errors: {},
+      fields: {
+        url: '',
+      },
+    },
+  };
+
   const elements = {
     form: document.querySelector('form'),
     urlInput: document.getElementById('url-input'),
@@ -45,9 +45,9 @@ export default () => {
             key: 'invalidUrl',
           }),
         },
-        mixed: {
-          notOneOf: 'Ссылка уже существует',
-        },
+        mixed: () => ({
+          key: 'linkExists',
+        }),
       });
       const createSchema = (validatedUrl) =>
         yup.object({
@@ -63,7 +63,7 @@ export default () => {
 
         const urlInputValue = elements.urlInput.value;
         watchedState.form.fields.url = urlInputValue;
-        const schema = createSchema(initialState.addedUrls);
+        const schema = createSchema(watchedState.addedUrls);
         schema
           .validate(initialState.form.fields)
           .then(() => {
@@ -73,13 +73,15 @@ export default () => {
           })
           .catch((err) => {
             watchedState.addingUrlProcess.processState = 'error';
-            watchedState.form.errors = err.message;
-          })
-          .finally(() => {
-            console.log(initialState);
-            console.log(elements);
-            console.log(initialState.addedUrls);
+            watchedState.form.errors = err.errors;
+            console.log(JSON.stringify(err, null, 2));
+            console.log(watchedState.addedUrls);
           });
+          // .finally(() => {
+          //   console.log(initialState);
+          //   console.log(elements);
+          //   console.log(initialState.addedUrls);
+          // });
       });
     });
 };
