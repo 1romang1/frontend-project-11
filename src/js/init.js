@@ -38,16 +38,18 @@ export default () => {
     .then(() => {
       yup.setLocale({
         string: {
-          required: () => ({
-            key: 'required',
-          }),
           url: () => ({
-            key: 'invalidUrl',
+            key: 'errors.invalidUrl',
           }),
         },
-        mixed: () => ({
-          key: 'linkExists',
-        }),
+        mixed: {
+          required: () => ({
+            key: 'errors.required',
+          }),
+          notOneOf: () => ({
+            key: 'errors.linkExists',
+          }),
+        },
       });
       const createSchema = (validatedUrl) =>
         yup.object({
@@ -55,7 +57,7 @@ export default () => {
         });
       const watchedState = onChange(
         initialState,
-        render(elements, initialState),
+        render(elements, initialState, i18nextInstance),
       );
 
       elements.form.addEventListener('submit', (e) => {
@@ -65,7 +67,7 @@ export default () => {
         watchedState.form.fields.url = urlInputValue;
         const schema = createSchema(watchedState.addedUrls);
         schema
-          .validate(initialState.form.fields)
+          .validate(watchedState.form.fields)
           .then(() => {
             watchedState.addingUrlProcess.processState = 'added'; // меняем статус процесса для render()
             watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
@@ -73,15 +75,15 @@ export default () => {
           })
           .catch((err) => {
             watchedState.addingUrlProcess.processState = 'error';
-            watchedState.form.errors = err.errors;
+            watchedState.form.errors = err.message;
             console.log(JSON.stringify(err, null, 2));
             console.log(watchedState.addedUrls);
           });
-          // .finally(() => {
-          //   console.log(initialState);
-          //   console.log(elements);
-          //   console.log(initialState.addedUrls);
-          // });
+        // .finally(() => {
+        //   console.log(initialState);
+        //   console.log(elements);
+        //   console.log(initialState.addedUrls);
+        // });
       });
     });
 };
