@@ -41,8 +41,9 @@
   "dependencies": {
     "i18next": "^24.0.5",
     "on-change": "^5.0.1",
-    "sass": "^1.80.5",
+    "sass": "^1.57.1",
     "sass-loader": "^16.0.3",
+    "sass-migrator": "^2.2.1",
     "yup": "^1.4.0"
   }
 }
