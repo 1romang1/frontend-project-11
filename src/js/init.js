@@ -1,37 +1,37 @@
-import onChange from 'on-change';
-import * as yup from 'yup';
-import i18next from 'i18next';
+import onChange from "on-change";
+import * as yup from "yup";
+import i18next from "i18next";
 // import isEmpty from 'lodash/isEmpty.js';
-import render from './view.js';
-import resources from '../locales/index.js';
+import render from "./view.js";
+import resources from "../locales/index.js";
 
 export default () => {
   const initialState = {
     addedUrls: [],
     addingUrlProcess: {
-      processState: 'filling', // варианты: 'filling', 'error', 'added'
+      processState: "filling", // варианты: 'filling', 'error', 'added'
       // processError: null, // для сетевых ошибок
     },
     form: {
       // valid: true,
       errors: {},
       fields: {
-        url: '',
+        url: "",
       },
     },
   };
 
   const elements = {
-    form: document.querySelector('form'),
-    urlInput: document.getElementById('url-input'),
-    submitButton: document.querySelector('button'),
-    feedbackElement: document.querySelector('.feedback'),
+    form: document.querySelector("form"),
+    urlInput: document.getElementById("url-input"),
+    submitButton: document.querySelector("button"),
+    feedbackElement: document.querySelector(".feedback"),
   };
 
   const i18nextInstance = i18next.createInstance();
   i18nextInstance
     .init({
-      lng: 'ru',
+      lng: "ru",
       debug: true,
       resources,
     })
@@ -39,15 +39,15 @@ export default () => {
       yup.setLocale({
         string: {
           url: () => ({
-            key: 'errors.invalidUrl',
+            key: "errors.invalidUrl",
           }),
         },
         mixed: {
           required: () => ({
-            key: 'errors.required',
+            key: "errors.required",
           }),
           notOneOf: () => ({
-            key: 'errors.linkExists',
+            key: "errors.linkExists",
           }),
         },
       });
@@ -57,10 +57,10 @@ export default () => {
         });
       const watchedState = onChange(
         initialState,
-        render(elements, initialState, i18nextInstance),
+        render(elements, initialState, i18nextInstance)
       );
 
-      elements.form.addEventListener('submit', (e) => {
+      elements.form.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const urlInputValue = elements.urlInput.value;
@@ -69,12 +69,12 @@ export default () => {
         schema
           .validate(watchedState.form.fields)
           .then(() => {
-            watchedState.addingUrlProcess.processState = 'added'; // меняем статус процесса для render()
+            watchedState.addingUrlProcess.processState = "added"; // меняем статус процесса для render()
             watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
             // watchedState.form.errors = {}; // сбрасываем ошибки
           })
           .catch((err) => {
-            watchedState.addingUrlProcess.processState = 'error';
+            watchedState.addingUrlProcess.processState = "error";
             watchedState.form.errors = err.message;
             console.log(JSON.stringify(err, null, 2));
             console.log(watchedState.addedUrls);
@@ -85,5 +85,29 @@ export default () => {
         //   console.log(initialState.addedUrls);
         // });
       });
+      fetch(
+        `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(
+          "http://lorem-rss.herokuapp.com/feed?unit=second&interval=5"
+        )}`
+      )
+        .then((response) => {
+          if (response.ok) return response.json();
+          throw new Error("Network response was not ok.");
+        })
+        .then((data) => {
+          const newData = data.contents;
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(newData, "application/xml");
+          const items = xmlDoc.querySelectorAll("item");
+          items.forEach((item) => {
+            const title = item.querySelector("title").textContent;
+            const link = item.querySelector("link").textContent;
+            const description = item.querySelector("description").textContent;
+            console.log(`Title: ${title}`);
+            console.log(`Link: ${link}`);
+            console.log(`Description: ${description}`);
+            console.log("---");
+          });
+        });
     });
 };
