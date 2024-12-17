@@ -99,11 +99,25 @@ export default () => {
               //   });
               // });
               .then((response) => {
-                console.log(response.data);
-                console.log(response.status);
-                console.log(response.statusText);
-                console.log(response.headers);
-                console.log(response.config);
+                  if (response.status === 200) return response.data;
+                  throw new Error('Network response was not ok.');
+                })
+              .then((data) => {
+                // console.log(response.status);
+                const newData = data.contents;
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(newData, 'application/xml');
+                const items = xmlDoc.querySelectorAll('item');
+                items.forEach((item) => {
+                  const title = item.querySelector('title').textContent;
+                  const link = item.querySelector('link').textContent;
+                  const description = item.querySelector('description').textContent;
+                  console.log(`Title: ${title}`);
+                  console.log(`Link: ${link}`);
+                  console.log(`Description: ${description}`);
+                  console.log('---');
+                });
+               
               });
           });
         })
