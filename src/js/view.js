@@ -1,7 +1,7 @@
 export default (elements, initialState, i18nextInstance) => () => {
   switch (initialState.addingUrlProcess.processState) {
     case 'added':
-      elements.feedbackElement.textContent = 'RSS успешно загружен';
+      elements.feedbackElement.textContent = i18nextInstance.t('validFeedback');
       elements.feedbackElement.classList.remove('text-danger');
       elements.urlInput.classList.remove('is-invalid');
       elements.feedbackElement.classList.add('text-success');
