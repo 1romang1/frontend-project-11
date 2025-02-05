@@ -20,7 +20,6 @@ export default () => {
         url: '',
       },
     },
-
   };
 
   const elements = {
@@ -98,21 +97,21 @@ export default () => {
                 return parser.parseFromString(newData, 'application/xml');
               })
               .then((xmlDoc) => {
+                const channel = xmlDoc.querySelector('channel');
+                const channelTitle = channel.querySelector('title');
+                const channelDescription = channel.querySelector('description');
+                console.log(`Feed title: ${channelTitle.textContent}`);
+                console.log(`Feed discription: ${channelDescription.textContent}`);
+                console.log('---');
+
                 const items = xmlDoc.querySelectorAll('item');
                 items.forEach((item) => {
-                  console.log(item.children)
-                  
-                  // const title = item.querySelector('title').textContent;
-                  // const description =
-                  //   item.querySelector('description').textContent;
-                  // console.log(`Title: ${title}`);
-                  // console.log(`Description: ${description}`);
-                  // console.log('---');
+                  const itemTitle = item.querySelector('title').textContent;
+                  const itemDescription = item.querySelector('description').textContent;
+                  console.log(`Title: ${itemTitle}`);
+                  console.log(`Description: ${itemDescription}`);
+                  console.log('---');
                 });
-                const channel = xmlDoc.querySelectorAll('channel');
-               
-                  console.log(channel.title)
-      
               });
           })
           .catch((err) => {
