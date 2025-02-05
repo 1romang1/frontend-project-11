@@ -2,7 +2,7 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
-// import isEmpty from 'lodash/isEmpty.js';
+import uniqueId from 'lodash/uniqueId';
 import render from './view.js';
 import resources from '../locales/index.js';
 
