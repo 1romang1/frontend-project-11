@@ -2,7 +2,7 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import render from './view.js';
 import resources from '../locales/index.js';
 
@@ -19,9 +19,9 @@ export default () => {
       fields: {
         url: '',
       },
-      feeds: [],
-      posts: [],
     },
+    feeds: [],
+    posts: [],
   };
 
   const elements = {
@@ -102,17 +102,26 @@ export default () => {
                 const channel = xmlDoc.querySelector('channel');
                 const channelTitle = channel.querySelector('title');
                 const channelDescription = channel.querySelector('description');
-                console.log(`Feed title: ${channelTitle.textContent}`);
-                console.log(`Feed discription: ${channelDescription.textContent}`);
-                console.log('---');
-
+                // console.log(`Feed title: ${channelTitle.textContent}`);
+                // console.log(
+                //   `Feed discription: ${channelDescription.textContent}`
+                // );
+                // console.log('---');
+                console.log(watchedState.feeds);
+                watchedState.feeds.push({
+                  id: uniqueId('feed_'),
+                  title: channelTitle.textContent,
+                  description: channelDescription.textContent,
+                });
+                console.log(watchedState.feeds.id);
                 const items = xmlDoc.querySelectorAll('item');
                 items.forEach((item) => {
                   const itemTitle = item.querySelector('title').textContent;
-                  const itemDescription = item.querySelector('description').textContent;
-                  console.log(`Title: ${itemTitle}`);
-                  console.log(`Description: ${itemDescription}`);
-                  console.log('---');
+                  const itemDescription =
+                    item.querySelector('description').textContent;
+                  // console.log(`Title: ${itemTitle}`);
+                  // console.log(`Description: ${itemDescription}`);
+                  // console.log('---');
                 });
               });
           })
