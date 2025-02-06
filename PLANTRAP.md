@@ -7,3 +7,5 @@
 3. Реализовать парсинг в отдельную (чистую!) функцию. Что должна принимать на вход эта функция и что возвращать?
 
 http://lorem-rss.herokuapp.com/feed?unit=second&interval=5&length=3
+
+https://habr.com/ru/rss/all/all/

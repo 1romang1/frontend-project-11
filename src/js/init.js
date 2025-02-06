@@ -107,22 +107,29 @@ export default () => {
                 //   `Feed discription: ${channelDescription.textContent}`
                 // );
                 // console.log('---');
-                console.log(watchedState.feeds);
+                // console.log(watchedState.feeds);
                 watchedState.feeds.push({
                   id: uniqueId('feed_'),
                   title: channelTitle.textContent,
                   description: channelDescription.textContent,
                 });
-                console.log(watchedState.feeds.id);
+                // console.log(watchedState.feeds);
                 const items = xmlDoc.querySelectorAll('item');
                 items.forEach((item) => {
-                  const itemTitle = item.querySelector('title').textContent;
-                  const itemDescription =
-                    item.querySelector('description').textContent;
-                  // console.log(`Title: ${itemTitle}`);
-                  // console.log(`Description: ${itemDescription}`);
-                  // console.log('---');
+                  const itemTitle = item.querySelector('title');
+                  const itemLink =
+                    item.querySelector('link');
+                    watchedState.posts.push({
+                      feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
+                      id: uniqueId('posts_'),
+                      title: itemTitle.textContent,
+                      link: itemLink.textContent,
+                    });
+                  console.log(`Title: ${itemTitle}`);
+                  console.log(`Link: ${itemLink}`);
+                  console.log('---');
                 });
+                console.log(watchedState.posts);
               });
           })
           .catch((err) => {
