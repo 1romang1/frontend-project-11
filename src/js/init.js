@@ -70,6 +70,11 @@ export default () => {
           newUrl
         )}`;
 
+      const rssParser = (data) => {
+        const parser = new DOMParser();
+        return parser.parseFromString(data.contents, 'application/xml');
+      };
+
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -92,41 +97,30 @@ export default () => {
                 throw new Error('Network response was not ok.');
               })
               .then((data) => {
-                // console.log(response.status);
-                const newData = data.contents;
-                const parser = new DOMParser();
-                // const xmlDoc = parser.parseFromString(newData, 'application/xml');
-                return parser.parseFromString(newData, 'application/xml');
+                return rssParser(data);
               })
               .then((xmlDoc) => {
                 const channel = xmlDoc.querySelector('channel');
                 const channelTitle = channel.querySelector('title');
                 const channelDescription = channel.querySelector('description');
-                // console.log(`Feed title: ${channelTitle.textContent}`);
-                // console.log(
-                //   `Feed discription: ${channelDescription.textContent}`
-                // );
-                // console.log('---');
-                // console.log(watchedState.feeds);
                 watchedState.feeds.push({
                   id: uniqueId('feed_'),
                   title: channelTitle.textContent,
                   description: channelDescription.textContent,
                 });
-                // console.log(watchedState.feeds);
                 const items = xmlDoc.querySelectorAll('item');
                 items.forEach((item) => {
                   const itemTitle = item.querySelector('title');
-                  const itemLink =
-                    item.querySelector('link');
-                    watchedState.posts.push({
-                      feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
-                      id: uniqueId('posts_'),
-                      title: itemTitle.textContent,
-                      link: itemLink.textContent,
-                    });
-                  console.log(`Title: ${itemTitle}`);
-                  console.log(`Link: ${itemLink}`);
+                  const itemLink = item.querySelector('link');
+                  watchedState.posts.push({
+                    feedId:
+                      watchedState.feeds[watchedState.feeds.length - 1].id,
+                    id: uniqueId('posts_'),
+                    title: itemTitle.textContent,
+                    link: itemLink.textContent,
+                  });
+                  console.log(`Title: ${itemTitle.textContent}`);
+                  console.log(`Link: ${itemLink.textContent}`);
                   console.log('---');
                 });
                 console.log(watchedState.posts);
