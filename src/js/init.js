@@ -72,9 +72,16 @@ export default () => {
 
       const rssParser = (data) => {
         const parser = new DOMParser();
-        return parser.parseFromString(data.contents, 'application/xml');
+        const result = parser.parseFromString(data.contents, 'application/xml');
+        const parseError = result.getElementsByTagName('parsererror');
+        if (parseError.length > 0) {
+          const errorDiv = document.createElement('div');
+          errorDiv.textContent = parseError[0].textContent;
+          elements.feedbackElement.insertAdjacentElement('afterend', errorDiv);
+          return;
+        }
+        return result;
       };
-
       elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
 
