@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "webpack --mode production",
-    "start": "webpack serve --open",
+    "build": "vite build",
+    "start": "vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
