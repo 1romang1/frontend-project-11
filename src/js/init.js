@@ -5,6 +5,7 @@ import axios from "axios";
 import { uniqueId } from "lodash";
 import render from "./view.js";
 import resources from "../locales/index.js";
+import createSchema from './utils/createSchema.js';
 
 export default () => {
   const initialState = {
@@ -56,10 +57,10 @@ export default () => {
       });
     });
     
-  const createSchema = (validatedUrl) =>
-    yup.object({
-      url: yup.string().url().required().notOneOf(validatedUrl),
-    });
+  // const createSchema = (validatedUrl) =>
+  //   yup.object({
+  //     url: yup.string().url().required().notOneOf(validatedUrl),
+  //   });
 
   const watchedState = onChange(
     initialState,

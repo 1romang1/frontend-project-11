@@ -23,7 +23,7 @@ export default (validatedUrl) =>
       .url()
       .required()
       .notOneOf(validatedUrl)
-      .test("is-rss", "Ресурс не содержит валидный RSS", (value) => {
+      .test("is-rss", { key: 'errors.notRSS' }, (value) => {
         if (!value) return false;
         // Используем оригинальную isRSS
         return isRSS(value)
