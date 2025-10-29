@@ -3,7 +3,7 @@ import fetchRSS from "./fetchRSS";
 
 const parceRSS = (data) => {
   const parser = new DOMParser();
-  const doc = parser.parseFromString(data.contents, "applicatoin/xml");
+  const doc = parser.parseFromString(data.contents, "application/xml");
 
   const isRss = doc.querySelector("rss");
   const isAtom = doc.querySelector("feed");
