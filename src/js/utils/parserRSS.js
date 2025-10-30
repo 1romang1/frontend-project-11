@@ -1,10 +1,10 @@
 export default (data) => {
   const parser = new DOMParser();
-  const result = parser.parseFromString(data.contents, 'application/xml');
-  const parseError = result.getElementsByTagName('parserror');
+  const doc = parser.parseFromString(data.contents, 'application/xml');
 
-  if (parseError.length > 0) {
-    return parseError[0].textContent;
+  const parseError = doc.getElementsByTagName('parserror');
+  if (parseError) {
+    throw new Error(parseError[0].textContent);
   }
-  return result;
+  return doc;
 };
