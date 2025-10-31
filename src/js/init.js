@@ -1,8 +1,9 @@
 import onChange from "on-change";
 import * as yup from "yup";
 import i18next from "i18next";
-import axios from "axios";
 import { uniqueId } from "lodash";
+import fetchRSS from "./utils/fetchRSS.js";
+import parserRSS from "./utils/parserRSS.js";
 import render from "./view.js";
 import resources from "../locales/index.js";
 import createSchema from './utils/createSchema.js';
@@ -56,34 +57,12 @@ export default () => {
         },
       });
     });
-    
-  // const createSchema = (validatedUrl) =>
-  //   yup.object({
-  //     url: yup.string().url().required().notOneOf(validatedUrl),
-  //   });
 
   const watchedState = onChange(
     initialState,
     render(elements, initialState, i18nextInstance)
   );
 
-  const createProxyUrl = (newUrl) =>
-    `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(
-      newUrl
-    )}`;
-
-  const rssParser = (data) => {
-    const parser = new DOMParser();
-    const result = parser.parseFromString(data.contents, "application/xml");
-    const parseError = result.getElementsByTagName("parsererror");
-    if (parseError.length > 0) {
-      const errorDiv = document.createElement("div");
-      errorDiv.textContent = parseError[0].textContent;
-      elements.feedbackElement.insertAdjacentElement("afterend", errorDiv);
-      return;
-    }
-    return result;
-  };
   elements.form.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -99,40 +78,33 @@ export default () => {
         watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
         // watchedState.form.errors = {}; // сбрасываем ошибки
         console.log(initialState);
-        axios
-          .get(createProxyUrl(initialState.form.fields.url))
-          .then((response) => {
-            if (response.status === 200) return response.data;
-            throw new Error("Network response was not ok.");
-          })
-          .then((data) => {
-            return rssParser(data);
-          })
-          .then((xmlDoc) => {
-            const channel = xmlDoc.querySelector("channel");
-            const channelTitle = channel.querySelector("title");
-            const channelDescription = channel.querySelector("description");
-            watchedState.feeds.push({
-              id: uniqueId("feed_"),
-              title: channelTitle.textContent,
-              description: channelDescription.textContent,
-            });
-            const items = xmlDoc.querySelectorAll("item");
-            items.forEach((item) => {
-              const itemTitle = item.querySelector("title");
-              const itemLink = item.querySelector("link");
-              watchedState.posts.push({
-                feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
-                id: uniqueId("posts_"),
-                title: itemTitle.textContent,
-                link: itemLink.textContent,
-              });
-              console.log(`Title: ${itemTitle.textContent}`);
-              console.log(`Link: ${itemLink.textContent}`);
-              console.log("---");
-            });
-            console.log(watchedState.posts);
+        return fetchRSS(watchedState.form.fields.url);
+      })
+      .then((contents) => {
+        const xmlDoc = parserRSS(contents);
+        const channel = xmlDoc.querySelector("channel");
+        const channelTitle = channel.querySelector("title");
+        const channelDescription = channel.querySelector("description");
+        watchedState.feeds.push({
+          id: uniqueId("feed_"),
+          title: channelTitle.textContent,
+          description: channelDescription.textContent,
+        });
+        const items = xmlDoc.querySelectorAll("item");
+        items.forEach((item) => {
+          const itemTitle = item.querySelector("title");
+          const itemLink = item.querySelector("link");
+          watchedState.posts.push({
+            feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
+            id: uniqueId("posts_"),
+            title: itemTitle.textContent,
+            link: itemLink.textContent,
           });
+          console.log(`Title: ${itemTitle.textContent}`);
+          console.log(`Link: ${itemLink.textContent}`);
+          console.log("---");
+        });
+        console.log(watchedState.posts);
       })
       .catch((err) => {
         watchedState.addingUrlProcess.processState = "error";
