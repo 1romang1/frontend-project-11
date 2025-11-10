@@ -31,6 +31,8 @@ export default () => {
     urlInput: document.getElementById("url-input"),
     submitButton: document.querySelector("button"),
     feedbackElement: document.querySelector(".feedback"),
+    postsContainer: document.querySelector(".posts"),
+    feedsContainer: document.querySelector(".feeds"),
   };
 
   const i18nextInstance = i18next.createInstance();
@@ -78,6 +80,7 @@ export default () => {
         watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
         // watchedState.form.errors = {}; // сбрасываем ошибки
         console.log(initialState);
+        console.log(elements);
         return fetchRSS(watchedState.form.fields.url);
       })
       .then((contents) => {
