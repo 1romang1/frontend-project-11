@@ -3,7 +3,7 @@ import * as yup from "yup";
 import i18next from "i18next";
 import { uniqueId } from "lodash";
 import fetchRSS from "./utils/fetchRSS.js";
-import parserRSS from "./utils/parserRSS.js";
+import parseXML from "./utils/parseXML.js";
 import render from "./view.js";
 import resources from "../locales/index.js";
 import createSchema from './utils/createSchema.js';
@@ -84,7 +84,7 @@ export default () => {
         return fetchRSS(watchedState.form.fields.url);
       })
       .then((contents) => {
-        const xmlDoc = parserRSS(contents);
+        const xmlDoc = parseXML(contents);
         const channel = xmlDoc.querySelector("channel");
         const channelTitle = channel.querySelector("title");
         const channelDescription = channel.querySelector("description");

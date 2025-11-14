@@ -1,20 +1,11 @@
 import * as yup from "yup";
 import fetchRSS from "./fetchRSS";
+import parseXML from "./parseXML";
 
-const parceRSS = (data) => {
+const parseRSS = (data) => {
   // data может быть строкой или объектом { contents }
   const xml = typeof data === "string" ? data : (data && data.contents) || "";
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(xml, "application/xml");
-
-  // Проверяем, не вернул ли парсер ошибку
-  const parserErrors = doc.getElementsByTagName("parsererror");
-  if (parserErrors.length > 0) {
-    throw new Error("XML parse error");
-  }
-
-  // Проверяем наличие тегов RSS или Atom
+  const doc = parseXML(xml)
   const isRss = doc.querySelector("rss");
   const isAtom = doc.querySelector("feed");
 
@@ -33,7 +24,7 @@ const isRSS = (url) =>
       console.log("Проверка URL:", url);
       console.log("Тип данных:", typeof data);
       console.log("Начало данных:", data.slice(0, 200));
-      return parceRSS(data);
+      return parseRSS(data);
     } catch (err) {
       console.error("Ошибка парсинга:", err.message);
       throw err;
