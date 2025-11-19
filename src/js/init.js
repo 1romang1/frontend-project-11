@@ -1,25 +1,26 @@
-import onChange from "on-change";
-import * as yup from "yup";
-import i18next from "i18next";
-import { uniqueId } from "lodash";
-import fetchRSS from "./utils/fetchRSS.js";
-import parseXML from "./utils/parseXML.js";
-import render from "./view.js";
-import resources from "../locales/index.js";
+import onChange from 'on-change';
+import * as yup from 'yup';
+import i18next from 'i18next';
+import { uniqueId } from 'lodash';
+import fetchRSS from './utils/fetchRSS.js';
+import parseXML from './utils/parseXML.js';
+import render from './view.js';
+import resources from '../locales/index.js';
 import createSchema from './utils/createSchema.js';
+import checkFeeds from './utils/checkFeeds.js';
 
 export default () => {
   const initialState = {
     addedUrls: [],
     addingUrlProcess: {
-      processState: "filling", // варианты: 'filling', 'error', 'added'
+      processState: 'filling', // варианты: 'filling', 'error', 'added'
       // processError: null, // для сетевых ошибок
     },
     form: {
       // valid: true,
       errors: {},
       fields: {
-        url: "",
+        url: '',
       },
     },
     feeds: [],
@@ -27,18 +28,18 @@ export default () => {
   };
 
   const elements = {
-    form: document.querySelector("form"),
-    urlInput: document.getElementById("url-input"),
-    submitButton: document.querySelector("button"),
-    feedbackElement: document.querySelector(".feedback"),
-    postsContainer: document.querySelector(".posts"),
-    feedsContainer: document.querySelector(".feeds"),
+    form: document.querySelector('form'),
+    urlInput: document.getElementById('url-input'),
+    submitButton: document.querySelector('button'),
+    feedbackElement: document.querySelector('.feedback'),
+    postsContainer: document.querySelector('.posts'),
+    feedsContainer: document.querySelector('.feeds'),
   };
 
   const i18nextInstance = i18next.createInstance();
   i18nextInstance
     .init({
-      lng: "ru",
+      lng: 'ru',
       debug: true,
       resources,
     })
@@ -46,15 +47,15 @@ export default () => {
       yup.setLocale({
         string: {
           url: () => ({
-            key: "errors.invalidUrl",
+            key: 'errors.invalidUrl',
           }),
         },
         mixed: {
           required: () => ({
-            key: "errors.required",
+            key: 'errors.required',
           }),
           notOneOf: () => ({
-            key: "errors.linkExists",
+            key: 'errors.linkExists',
           }),
         },
       });
@@ -65,7 +66,7 @@ export default () => {
     render(elements, initialState, i18nextInstance)
   );
 
-  elements.form.addEventListener("submit", (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const urlInputValue = elements.urlInput.value;
@@ -76,7 +77,7 @@ export default () => {
     schema
       .validate(watchedState.form.fields)
       .then(() => {
-        watchedState.addingUrlProcess.processState = "added"; // меняем статус процесса для render()
+        watchedState.addingUrlProcess.processState = 'added'; // меняем статус процесса для render()
         watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
         // watchedState.form.errors = {}; // сбрасываем ошибки
         console.log(initialState);
@@ -85,33 +86,39 @@ export default () => {
       })
       .then((contents) => {
         const xmlDoc = parseXML(contents);
-        const channel = xmlDoc.querySelector("channel");
-        const channelTitle = channel.querySelector("title");
-        const channelDescription = channel.querySelector("description");
+        const channel = xmlDoc.querySelector('channel');
+        const channelTitle = channel.querySelector('title');
+        const channelDescription = channel.querySelector('description');
         watchedState.feeds.push({
-          id: uniqueId("feed_"),
+          id: uniqueId('feed_'),
           title: channelTitle.textContent,
           description: channelDescription.textContent,
         });
-        const items = xmlDoc.querySelectorAll("item");
+        const items = xmlDoc.querySelectorAll('item');
         items.forEach((item) => {
-          const itemTitle = item.querySelector("title");
-          const itemLink = item.querySelector("link");
-          const itemId = item.querySelector("guid");
+          const itemTitle = item.querySelector('title');
+          const itemLink = item.querySelector('link');
+          const itemId = item.querySelector('guid');
           watchedState.posts.push({
             feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
             id: itemId.textContent,
             title: itemTitle.textContent,
             link: itemLink.textContent,
           });
+
+          if (watchedState.feeds.length === 1) {
+            const currentPostsIds = watchedState.posts.map((p) => p.id);
+            checkFeeds(watchedState, currentPostsIds);
+          }
+
           console.log(`Title: ${itemTitle.textContent}`);
           console.log(`Link: ${itemLink.textContent}`);
-          console.log("---");
+          console.log('---');
         });
         console.log(watchedState.posts);
       })
       .catch((err) => {
-        watchedState.addingUrlProcess.processState = "error";
+        watchedState.addingUrlProcess.processState = 'error';
         watchedState.form.errors = err.message;
         console.log(JSON.stringify(err, null, 2));
         console.log(watchedState.addedUrls);
