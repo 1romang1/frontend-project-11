@@ -97,9 +97,10 @@ export default () => {
         items.forEach((item) => {
           const itemTitle = item.querySelector("title");
           const itemLink = item.querySelector("link");
+          const itemId = item.querySelector("guid");
           watchedState.posts.push({
             feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
-            id: uniqueId("posts_"),
+            id: itemId.textContent,
             title: itemTitle.textContent,
             link: itemLink.textContent,
           });
