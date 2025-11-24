@@ -47,9 +47,9 @@ const renderFeedsList = (feeds, elements) => {
         <p class="card-text">${feed.description}</p>
       </div>
     </div>
-  `
+  `,
     )
-    .join("");
+    .join('');
 
   feedsContainer.innerHTML = `
     <div class="card border-0">
@@ -61,9 +61,9 @@ const renderFeedsList = (feeds, elements) => {
   `;
 };
 
-const renderPostsList = (posts, elements) => {
-  const { postsContainer } = elements
-  if (!postsContainer) return
+const renderPostsList = (posts, elements, state) => {
+  const { postsContainer } = elements;
+  if (!postsContainer) return;
 
   if (posts.length === 0) {
     postsContainer.innerHTML = `
@@ -73,13 +73,16 @@ const renderPostsList = (posts, elements) => {
           <p class="card-text text-muted">Пока нет постов. Новые посты будут появляться автоматически.</p>
         </div>
       </div>
-    `
-    return
+    `;
+    return;
   }
 
   const postsHtml = posts.map((post) => {
-    // const isRead = readPosts.has(post.id)
-    // const titleClass = isRead ? '' : 'fw-bold'
+    const { readPosts } = state.uiState;
+    console.log('readPosts', readPosts)
+    const isRead = readPosts.includes(post.id);
+    console.log(isRead)
+    const titleClass = isRead ? 'fw-normal' : 'fw-bold';
 
     return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
@@ -90,8 +93,8 @@ const renderPostsList = (posts, elements) => {
         Просмотр
       </button>
     </div>
-    `
-  }).join('')
+    `;
+  }).join('');
 
   postsContainer.innerHTML = `
     <div class="card border-0">
@@ -102,29 +105,29 @@ const renderPostsList = (posts, elements) => {
         </div>
       </div>
     </div>
-  `
+  `;
 };
 export default (elements, initialState, i18nextInstance) => () => {
   switch (initialState.addingUrlProcess.processState) {
-    case "added":
-      elements.feedbackElement.textContent = i18nextInstance.t("validFeedback");
-      elements.feedbackElement.classList.remove("text-danger");
-      elements.urlInput.classList.remove("is-invalid");
-      elements.feedbackElement.classList.add("text-success");
-      elements.urlInput.value = "";
+    case 'added':
+      elements.feedbackElement.textContent = i18nextInstance.t('validFeedback');
+      elements.feedbackElement.classList.remove('text-danger');
+      elements.urlInput.classList.remove('is-invalid');
+      elements.feedbackElement.classList.add('text-success');
+      elements.urlInput.value = '';
       // postsAndFeedsRender(elements, initialState);
       renderFeedsList(initialState.feeds, elements);
-      renderPostsList(initialState.posts, elements);
+      renderPostsList(initialState.posts, elements, initialState);
       break;
-    case "error":
-      elements.urlInput.classList.add("is-invalid");
+    case 'error':
+      elements.urlInput.classList.add('is-invalid');
       elements.feedbackElement.textContent = i18nextInstance.t(
-        initialState.form.errors.key
+        initialState.form.errors.key,
       );
-      elements.feedbackElement.classList.remove("text-success");
-      elements.feedbackElement.classList.add("text-danger");
+      elements.feedbackElement.classList.remove('text-success');
+      elements.feedbackElement.classList.add('text-danger');
       break;
-    default:
+    default: // пофиксить дефолт
       break;
   }
 };
