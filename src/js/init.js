@@ -25,6 +25,9 @@ export default () => {
     },
     feeds: [],
     posts: [],
+    uiState: {
+      readPosts: [],
+    },
   };
 
   const elements = {
