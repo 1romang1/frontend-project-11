@@ -108,24 +108,25 @@ const renderPostsList = (posts, elements, state) => {
   `;
 };
 export default (elements, initialState, i18nextInstance) => () => {
+  const { feedbackElement, urlInput } = elements;
   switch (initialState.addingUrlProcess.processState) {
     case 'added':
-      elements.feedbackElement.textContent = i18nextInstance.t('validFeedback');
-      elements.feedbackElement.classList.remove('text-danger');
-      elements.urlInput.classList.remove('is-invalid');
-      elements.feedbackElement.classList.add('text-success');
-      elements.urlInput.value = '';
+      feedbackElement.textContent = i18nextInstance.t('validFeedback');
+      feedbackElement.classList.remove('text-danger');
+      urlInput.classList.remove('is-invalid');
+      feedbackElement.classList.add('text-success');
+      urlInput.value = '';
       // postsAndFeedsRender(elements, initialState);
       renderFeedsList(initialState.feeds, elements);
       renderPostsList(initialState.posts, elements, initialState);
       break;
     case 'error':
-      elements.urlInput.classList.add('is-invalid');
-      elements.feedbackElement.textContent = i18nextInstance.t(
+      urlInput.classList.add('is-invalid');
+      feedbackElement.textContent = i18nextInstance.t(
         initialState.form.errors.key,
       );
-      elements.feedbackElement.classList.remove('text-success');
-      elements.feedbackElement.classList.add('text-danger');
+      feedbackElement.classList.remove('text-success');
+      feedbackElement.classList.add('text-danger');
       break;
     default: // пофиксить дефолт
       break;
