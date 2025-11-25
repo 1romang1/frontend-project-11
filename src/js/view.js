@@ -78,10 +78,10 @@ const renderPostsList = (posts, elements, state) => {
   }
 
   const postsHtml = posts.map((post) => {
-    const { readPosts } = state.uiState;
-    console.log('readPosts', readPosts)
+    const { uiState: { readPosts } } = state;
+    console.log(readPosts);
     const isRead = readPosts.includes(post.id);
-    console.log(isRead)
+    console.log(isRead);
     const titleClass = isRead ? 'fw-normal' : 'fw-bold';
 
     return `
