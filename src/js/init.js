@@ -72,7 +72,7 @@ export default () => {
   elements.postsContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
-    const { postId } = btn.dataset.postId;
+    const { postId } = btn.dataset;
     if (!postId) return; // игнорируем кнопки без data-post-id (например submit)
     if (!watchedState.uiState.readPosts.includes(postId)) {
       watchedState.uiState.readPosts.push(postId);
