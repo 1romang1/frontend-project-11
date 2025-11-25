@@ -69,13 +69,14 @@ export default () => {
     render(elements, initialState, i18nextInstance),
   );
 
-  const btns = document.querySelectorAll('button');
-  btns.forEach((btn) => {
-    btn.addEventListener('click', (event) => {
-      const btnId = event.currentTarget.dataset.postId;
-      watchedState.uiState.readPosts.push(btnId);
-      console.log('watchedState.uiState.readPosts', watchedState.uiState.readPosts);
-    });
+  elements.postsContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const { postId } = btn.dataset.postId;
+    if (!postId) return; // игнорируем кнопки без data-post-id (например submit)
+    if (!watchedState.uiState.readPosts.includes(postId)) {
+      watchedState.uiState.readPosts.push(postId);
+    }
   });
 
   elements.form.addEventListener('submit', (e) => {
