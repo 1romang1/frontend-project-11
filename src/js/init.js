@@ -27,6 +27,10 @@ export default () => {
     posts: [],
     uiState: {
       readPosts: [],
+      modal: {
+        isOpen: false,
+        postId: null,
+      },
     },
   };
 
