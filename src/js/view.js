@@ -90,7 +90,7 @@ const renderPostsList = (posts, elements, state) => {
       <a href="${post.link}" class="${titleClass}" target="_blank" rel="noopener noreferrer">
         ${post.title}
       </a>
-      <button type="button" class="btn btn-outline-primary btn-sm" data-post-id="${post.id}">
+      <button type="button" class="btn btn-outline-primary btn-sm" data-post-id="${post.id}" data-bs-target="#modal" data-bs-toggle="modal">
         Просмотр
       </button>
     </div>
@@ -108,6 +108,13 @@ const renderPostsList = (posts, elements, state) => {
     </div>
   `;
 };
+
+const renderModal = (state) => {
+  if (!state.uiState.modal.isOpen) return;
+
+
+};
+
 export default (elements, initialState, i18nextInstance) => () => {
   const { feedbackElement, urlInput } = elements;
   switch (initialState.addingUrlProcess.processState) {
