@@ -77,15 +77,18 @@ const renderPostsList = (posts, elements, state) => {
     return;
   }
 
-  const postsHtml = posts.map((post) => {
-    const { uiState: { readPosts } } = state;
-    // const test = state.uiState.readPosts
-    console.log('readPosts', readPosts);
-    const isRead = readPosts.includes(post.id);
-    console.log(isRead);
-    const titleClass = isRead ? 'fw-normal' : 'fw-bold';
+  const postsHtml = posts
+    .map((post) => {
+      const {
+        uiState: { readPosts },
+      } = state;
+      // const test = state.uiState.readPosts
+      console.log('readPosts', readPosts);
+      const isRead = readPosts.includes(post.id);
+      console.log(isRead);
+      const titleClass = isRead ? 'fw-normal' : 'fw-bold';
 
-    return `
+      return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
       <a href="${post.link}" class="${titleClass}" target="_blank" rel="noopener noreferrer">
         ${post.title}
@@ -95,7 +98,8 @@ const renderPostsList = (posts, elements, state) => {
       </button>
     </div>
     `;
-  }).join('');
+    })
+    .join('');
 
   postsContainer.innerHTML = `
     <div class="card border-0">
@@ -111,8 +115,16 @@ const renderPostsList = (posts, elements, state) => {
 
 const renderModal = (state) => {
   if (!state.uiState.modal.isOpen) return;
-
-
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const postIdForModal = state.uiState.modal.postId; // null
+  console.log('postIdForModal', postIdForModal);
+  console.log('state.uiState.modal.postId', state.uiState.modal.postId);
+  const postForModal = state.posts.find((post) => post.id === postIdForModal);
+  console.log(postForModal)
+  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
+  modalTitle.textContent = postTitleForModal.textContent;
+  modalBody.textContent = postDescriptionForModal.textContent;
 };
 
 export default (elements, initialState, i18nextInstance) => () => {
@@ -127,6 +139,7 @@ export default (elements, initialState, i18nextInstance) => () => {
       // postsAndFeedsRender(elements, initialState);
       renderFeedsList(initialState.feeds, elements);
       renderPostsList(initialState.posts, elements, initialState);
+      renderModal(initialState)
       break;
     case 'error':
       urlInput.classList.add('is-invalid');
