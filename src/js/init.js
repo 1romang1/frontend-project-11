@@ -81,6 +81,8 @@ export default () => {
     if (!watchedState.uiState.readPosts.includes(postId)) {
       watchedState.uiState.readPosts.push(postId);
     }
+    watchedState.uiState.modal.isOpen = true;
+    watchedState.uiState.modal.postId = postId;
   });
 
   elements.form.addEventListener('submit', (e) => {
