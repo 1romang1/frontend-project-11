@@ -47,9 +47,9 @@ const renderFeedsList = (feeds, elements) => {
         <p class="card-text">${feed.description}</p>
       </div>
     </div>
-  `,
+  `
     )
-    .join('');
+    .join("");
 
   feedsContainer.innerHTML = `
     <div class="card border-0">
@@ -83,10 +83,10 @@ const renderPostsList = (posts, elements, state) => {
         uiState: { readPosts },
       } = state;
       // const test = state.uiState.readPosts
-      console.log('readPosts', readPosts);
+      console.log("readPosts", readPosts);
       const isRead = readPosts.includes(post.id);
       console.log(isRead);
-      const titleClass = isRead ? 'fw-normal' : 'fw-bold';
+      const titleClass = isRead ? "fw-normal" : "fw-bold";
 
       return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
@@ -99,7 +99,7 @@ const renderPostsList = (posts, elements, state) => {
     </div>
     `;
     })
-    .join('');
+    .join("");
 
   postsContainer.innerHTML = `
     <div class="card border-0">
@@ -115,40 +115,63 @@ const renderPostsList = (posts, elements, state) => {
 
 const renderModal = (state) => {
   if (!state.uiState.modal.isOpen) return;
-  const modalTitle = document.querySelector('.modal-title');
-  const modalBody = document.querySelector('.modal-body');
-  const postIdForModal = state.uiState.modal.postId; // null
-  console.log('postIdForModal', postIdForModal);
-  console.log('state.uiState.modal.postId', state.uiState.modal.postId);
+  const modalTitle = document.querySelector(".modal-title");
+  const modalBody = document.querySelector(".modal-body");
+  const postIdForModal = state.posts.find((p) => p.id === postIdForModal);
+  console.log("postIdForModal", postIdForModal);
+  console.log("state.uiState.modal.postId", state.uiState.modal.postId);
   const postForModal = state.posts.find((post) => post.id === postIdForModal);
-  console.log(postForModal)
-  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
+  console.log(postForModal);
+  const { title: postTitleForModal, description: postDescriptionForModal } =
+    postForModal;
   modalTitle.textContent = postTitleForModal.textContent;
   modalBody.textContent = postDescriptionForModal.textContent;
 };
 
-export default (elements, initialState, i18nextInstance) => () => {
-  const { feedbackElement, urlInput } = elements;
-  switch (initialState.addingUrlProcess.processState) {
-    case 'added':
-      feedbackElement.textContent = i18nextInstance.t('validFeedback');
-      feedbackElement.classList.remove('text-danger');
-      urlInput.classList.remove('is-invalid');
-      feedbackElement.classList.add('text-success');
-      urlInput.value = '';
-      // postsAndFeedsRender(elements, initialState);
-      renderFeedsList(initialState.feeds, elements);
-      renderPostsList(initialState.posts, elements, initialState);
-      renderModal(initialState)
+export default (elements, initialState, i18nextInstance) => (path, value) => {
+  // console.log("state:", state);
+  // console.log("render path:", path);
+  // console.log("value:", value);
+  const { feedbackElement, urlInput, submitButton } = elements;
+  // console.log("Feedback Element:", elements.feedbackElement);
+  // console.log("URL Input:", elements.urlInput);
+  switch (path) {
+    case "addingUrlProcess.processState":
+      if (value === "loading") {
+        // Здесь вы можете заблокировать input и кнопку, и показать спиннер
+        submitButton.disabled = true;
+      }
+      if (value === "added") {
+        console.log("опаньки, сучара!");
+        console.log("Шаг 0: Начало");
+
+        feedbackElement.textContent = i18nextInstance.t("validFeedback");
+        console.log("Шаг 1: Текст изменен"); // Появится ли это?
+
+        feedbackElement.classList.remove("text-danger");
+        feedbackElement.classList.add("text-success");
+        console.log("Шаг 2: Классы обновлены"); // А это?
+
+        urlInput.value = "";
+        console.log("Шаг 3: Инпут очищен"); // Доходим ли мы сюда?
+
+        renderFeedsList(initialState.feeds, elements);
+        console.log("Шаг 4: Фиды отрисованы");
+        renderPostsList(initialState.posts, elements, initialState);
+        renderModal(initialState);
+      }
+      if (value === "error") {
+        const errorKey = initialState.form?.errors?.key;
+        if (!errorKey) return;
+
+        urlInput.classList.add("is-invalid");
+        feedbackElement.textContent = i18nextInstance.t(errorKey);
+        feedbackElement.classList.remove("text-success");
+        feedbackElement.classList.add("text-danger");
+      }
       break;
-    case 'error':
-      urlInput.classList.add('is-invalid');
-      feedbackElement.textContent = i18nextInstance.t(
-        initialState.form.errors.key,
-      );
-      feedbackElement.classList.remove('text-success');
-      feedbackElement.classList.add('text-danger');
-      break;
+    // case "error":
+    //   break;
     default: // пофиксить дефолт
       break;
   }
