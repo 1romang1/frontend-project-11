@@ -129,50 +129,46 @@ const renderModal = (state) => {
 };
 
 export default (elements, initialState, i18nextInstance) => (path, value) => {
-  // console.log("state:", state);
-  // console.log("render path:", path);
-  // console.log("value:", value);
   const { feedbackElement, urlInput, submitButton } = elements;
-  // console.log("Feedback Element:", elements.feedbackElement);
-  // console.log("URL Input:", elements.urlInput);
+
   switch (path) {
     case "addingUrlProcess.processState":
       if (value === "loading") {
-        // Здесь вы можете заблокировать input и кнопку, и показать спиннер
         submitButton.disabled = true;
+
+        urlInput.classList.remove("is-invalid");
+        feedbackElement.textContent = "";
       }
       if (value === "added") {
-        console.log("опаньки, сучара!");
-        console.log("Шаг 0: Начало");
+        submitButton.disabled = false;
+
+        urlInput.classList.remove("is-invalid");
 
         feedbackElement.textContent = i18nextInstance.t("validFeedback");
-        console.log("Шаг 1: Текст изменен"); // Появится ли это?
-
         feedbackElement.classList.remove("text-danger");
         feedbackElement.classList.add("text-success");
-        console.log("Шаг 2: Классы обновлены"); // А это?
-
         urlInput.value = "";
-        console.log("Шаг 3: Инпут очищен"); // Доходим ли мы сюда?
-
         renderFeedsList(initialState.feeds, elements);
-        console.log("Шаг 4: Фиды отрисованы");
         renderPostsList(initialState.posts, elements, initialState);
         renderModal(initialState);
       }
-      if (value === "error") {
-        const errorKey = initialState.form?.errors?.key;
-        if (!errorKey) return;
-
-        urlInput.classList.add("is-invalid");
-        feedbackElement.textContent = i18nextInstance.t(errorKey);
-        feedbackElement.classList.remove("text-success");
-        feedbackElement.classList.add("text-danger");
-      }
       break;
-    // case "error":
-    //   break;
-    default: // пофиксить дефолт
+    case "form.errors":
+      const errorKey = value.key;
+
+      if (!errorKey) {
+        feedbackElement.textContent = "";
+        feedbackElement.classList.remove("text-danger", "text-success");
+        urlInput.classList.remove("is-invalid");
+        break;
+      }
+
+      urlInput.classList.add("is-invalid");
+      feedbackElement.textContent = i18nextInstance.t(errorKey);
+      feedbackElement.classList.remove("text-success");
+      feedbackElement.classList.add("text-danger");
+      break;
+    default:
       break;
   }
 };

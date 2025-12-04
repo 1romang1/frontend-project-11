@@ -103,9 +103,8 @@ export default () => {
       .then(() => {
         watchedState.addingUrlProcess.processState = "loading";
         watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
-        // watchedState.form.errors = {}; // сбрасываем ошибки
-        // console.log(watchedState);
-        // console.log(elements);
+        watchedState.form.errors = {};
+
         return fetchRSS(watchedState.form.fields.url);
       })
       .then((contents) => {
@@ -144,10 +143,12 @@ export default () => {
          watchedState.addingUrlProcess.processState = "added";
       })
       .catch((err) => {
-        watchedState.addingUrlProcess.processState = "error";
+        console.log(JSON.stringify(err, null, 2));
+        console.log(JSON.stringify(err.message));
         watchedState.form.errors = err.message;
+        watchedState.addingUrlProcess.processState = "error";
         // console.log(JSON.stringify(err, null, 2));
-        // console.log(watchedState.addedUrls);
+        console.log(watchedState);
       });
   });
 };

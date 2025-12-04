@@ -21,13 +21,13 @@ const isRSS = (url) =>
   fetchRSS(url).then((data) => {
     try {
       // Включим временный лог для диагностики
-      console.log("Проверка URL:", url);
-      console.log("Тип данных:", typeof data);
-      console.log("Начало данных:", data.slice(0, 200));
+      // console.log("Проверка URL:", url);
+      // console.log("Тип данных:", typeof data);
+      // console.log("Начало данных:", data.slice(0, 200));
       return parseRSS(data);
     } catch (err) {
       console.error("Ошибка парсинга:", err.message);
-      throw err;
+      throw new Error(err);
     }
   });
 
