@@ -87,6 +87,7 @@ const renderPostsList = (posts, elements, state) => {
       const isRead = readPosts.includes(post.id);
       console.log(isRead);
       const titleClass = isRead ? "fw-normal" : "fw-bold";
+      console.log(titleClass);
 
       return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
@@ -124,7 +125,8 @@ const renderModal = (state) => {
   // console.log("state.uiState.modal.postId", state.uiState.modal.postId);
   const postForModal = state.posts.find((post) => post.id === postIdForModal);
   // console.log(postForModal);
-  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
+  const { title: postTitleForModal, description: postDescriptionForModal } =
+    postForModal;
   // console.log(postTitleForModal)
   // console.log(postDescriptionForModal)
   modalTitle.textContent = postTitleForModal;
@@ -170,8 +172,12 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
       feedbackElement.classList.remove("text-success");
       feedbackElement.classList.add("text-danger");
       break;
+
     case "uiState.modal.isOpen":
       renderModal(initialState);
+    case "uiState.readPosts":
+      renderPostsList(initialState.posts, elements, initialState);
+      break;
     default:
       break;
   }
