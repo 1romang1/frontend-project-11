@@ -116,15 +116,18 @@ const renderPostsList = (posts, elements, state) => {
 const renderModal = (state) => {
   if (!state.uiState.modal.isOpen) return;
   const modalTitle = document.querySelector(".modal-title");
+  // console.log(modalTitle)
   const modalBody = document.querySelector(".modal-body");
-  const postIdForModal = state.posts.find((p) => p.id === postIdForModal);
-  console.log("postIdForModal", postIdForModal);
-  console.log("state.uiState.modal.postId", state.uiState.modal.postId);
+  // console.log(modalBody)
+  const postIdForModal = state.uiState.modal.postId;
+  // console.log("postIdForModal", postIdForModal);
+  // console.log("state.uiState.modal.postId", state.uiState.modal.postId);
   const postForModal = state.posts.find((post) => post.id === postIdForModal);
-  console.log(postForModal);
-  const { title: postTitleForModal, description: postDescriptionForModal } =
-    postForModal;
-  modalTitle.textContent = postTitleForModal.textContent;
+  // console.log(postForModal);
+  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
+  // console.log(postTitleForModal)
+  // console.log(postDescriptionForModal)
+  modalTitle.textContent = postTitleForModal;
   modalBody.textContent = postDescriptionForModal.textContent;
 };
 
@@ -150,7 +153,6 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
         urlInput.value = "";
         renderFeedsList(initialState.feeds, elements);
         renderPostsList(initialState.posts, elements, initialState);
-        renderModal(initialState);
       }
       break;
     case "form.errors":
@@ -168,6 +170,8 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
       feedbackElement.classList.remove("text-success");
       feedbackElement.classList.add("text-danger");
       break;
+    case "uiState.modal.isOpen":
+      renderModal(initialState);
     default:
       break;
   }

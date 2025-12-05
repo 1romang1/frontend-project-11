@@ -81,12 +81,8 @@ export default () => {
     if (!postId) return; // игнорируем кнопки без data-post-id (например submit)
     if (!watchedState.uiState.readPosts.includes(postId)) {
       watchedState.uiState.readPosts.push(postId);
-      watchedState.uiState.modal.isOpen = true;
       watchedState.uiState.modal.postId = postId;
-      // console.log(
-      //   "watchedState.uiState.modal.postId",
-      //   watchedState.uiState.modal.postId
-      // );
+      watchedState.uiState.modal.isOpen = true;
     }
   });
 
