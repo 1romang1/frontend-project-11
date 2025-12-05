@@ -146,6 +146,6 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
       break;
 
     default:
-      throw new Error('Что то пошло не так!');
+      console.log(path);
   }
 };
