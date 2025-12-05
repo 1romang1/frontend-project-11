@@ -1,26 +1,24 @@
-import onChange from "on-change";
-import * as yup from "yup";
-import i18next from "i18next";
-import { uniqueId } from "lodash";
-import fetchRSS from "./utils/fetchRSS.js";
-import parseXML from "./utils/parseXML.js";
-import render from "./view.js";
-import resources from "../locales/index.js";
-import createSchema from "./utils/createSchema.js";
-import checkFeeds from "./utils/checkFeeds.js";
+import onChange from 'on-change';
+import * as yup from 'yup';
+import i18next from 'i18next';
+import { uniqueId } from 'lodash';
+import fetchRSS from './utils/fetchRSS.js';
+import parseXML from './utils/parseXML.js';
+import render from './view.js';
+import resources from '../locales/index.js';
+import createSchema from './utils/createSchema.js';
+import checkFeeds from './utils/checkFeeds.js';
 
 export default () => {
   const initialState = {
     addedUrls: [],
     addingUrlProcess: {
-      processState: "filling", // варианты: 'filling', 'error', 'added'
-      // processError: null, // для сетевых ошибок
+      processState: 'filling',
     },
     form: {
-      // valid: true,
       errors: {},
       fields: {
-        url: "",
+        url: '',
       },
     },
     feeds: [],
@@ -35,18 +33,18 @@ export default () => {
   };
 
   const elements = {
-    form: document.querySelector("form"),
-    urlInput: document.getElementById("url-input"),
-    submitButton: document.querySelector("button"),
-    feedbackElement: document.querySelector(".feedback"),
-    postsContainer: document.querySelector(".posts"),
-    feedsContainer: document.querySelector(".feeds"),
+    form: document.querySelector('form'),
+    urlInput: document.getElementById('url-input'),
+    submitButton: document.querySelector('button'),
+    feedbackElement: document.querySelector('.feedback'),
+    postsContainer: document.querySelector('.posts'),
+    feedsContainer: document.querySelector('.feeds'),
   };
 
   const i18nextInstance = i18next.createInstance();
   i18nextInstance
     .init({
-      lng: "ru",
+      lng: 'ru',
       debug: true,
       resources,
     })
@@ -54,15 +52,15 @@ export default () => {
       yup.setLocale({
         string: {
           url: () => ({
-            key: "errors.invalidUrl",
+            key: 'errors.invalidUrl',
           }),
         },
         mixed: {
           required: () => ({
-            key: "errors.required",
+            key: 'errors.required',
           }),
           notOneOf: () => ({
-            key: "errors.linkExists",
+            key: 'errors.linkExists',
           }),
         },
       });
@@ -70,15 +68,14 @@ export default () => {
 
   const watchedState = onChange(
     initialState,
-    render(elements, initialState, i18nextInstance)
+    render(elements, initialState, i18nextInstance),
   );
 
-  elements.postsContainer.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
+  elements.postsContainer.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
     if (!btn) return;
     const { postId } = btn.dataset;
-    // console.log("postId", postId);
-    if (!postId) return; // игнорируем кнопки без data-post-id (например submit)
+    if (!postId) return;
     if (!watchedState.uiState.readPosts.includes(postId)) {
       watchedState.uiState.readPosts.push(postId);
       watchedState.uiState.modal.postId = postId;
@@ -86,7 +83,7 @@ export default () => {
     }
   });
 
-  elements.form.addEventListener("submit", (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const urlInputValue = elements.urlInput.value;
@@ -97,28 +94,28 @@ export default () => {
     schema
       .validate(watchedState.form.fields)
       .then(() => {
-        watchedState.addingUrlProcess.processState = "loading";
-        watchedState.addedUrls.push(urlInputValue); // добавляем валидный url в подписки
+        watchedState.addingUrlProcess.processState = 'loading';
+        watchedState.addedUrls.push(urlInputValue);
         watchedState.form.errors = {};
 
         return fetchRSS(watchedState.form.fields.url);
       })
       .then((contents) => {
         const xmlDoc = parseXML(contents);
-        const channel = xmlDoc.querySelector("channel");
-        const channelTitle = channel.querySelector("title");
-        const channelDescription = channel.querySelector("description");
+        const channel = xmlDoc.querySelector('channel');
+        const channelTitle = channel.querySelector('title');
+        const channelDescription = channel.querySelector('description');
         watchedState.feeds.push({
-          id: uniqueId("feed_"),
+          id: uniqueId('feed_'),
           title: channelTitle.textContent,
           description: channelDescription.textContent,
         });
-        const items = xmlDoc.querySelectorAll("item");
+        const items = xmlDoc.querySelectorAll('item');
         items.forEach((item) => {
-          const itemTitle = item.querySelector("title");
-          const itemLink = item.querySelector("link");
-          const itemId = item.querySelector("guid");
-          const itemDescr = item.querySelector("description");
+          const itemTitle = item.querySelector('title');
+          const itemLink = item.querySelector('link');
+          const itemId = item.querySelector('guid');
+          const itemDescr = item.querySelector('description');
           watchedState.posts.push({
             feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
             id: itemId.textContent,
@@ -130,21 +127,13 @@ export default () => {
           if (watchedState.feeds.length === 1) {
             checkFeeds(watchedState);
           }
-          // меняем статус процесса для render()
-          // console.log(`Title: ${itemTitle.textContent}`);
-          // console.log(`Link: ${itemLink.textContent}`);
-          // console.log("---");
         });
-        // console.log(watchedState.posts);
-         watchedState.addingUrlProcess.processState = "added";
+
+        watchedState.addingUrlProcess.processState = 'added';
       })
       .catch((err) => {
-        console.log(JSON.stringify(err, null, 2));
-        console.log(JSON.stringify(err.message));
         watchedState.form.errors = err.message;
-        watchedState.addingUrlProcess.processState = "error";
-        // console.log(JSON.stringify(err, null, 2));
-        console.log(watchedState);
+        watchedState.addingUrlProcess.processState = 'error';
       });
   });
 };

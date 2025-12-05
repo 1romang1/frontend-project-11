@@ -1,27 +1,3 @@
-// function postsAndFeedsRender(elements, initialState) {
-//   elements.feedsContainer.innerHTML = ''; // очистка перед рендером
-//   elements.postsContainer.innerHTML = '';
-
-//   initialState.feeds.forEach((feed) => {
-//     const feedEl = document.createElement("article");
-//     const titleEl = document.createElement("h2");
-//     titleEl.textContent = feed.title;
-//     const descriptionEl = document.createElement("p");
-//     descriptionEl.textContent = feed.description;
-//     feedEl.appendChild(titleEl);
-//     feedEl.appendChild(descriptionEl);
-//     elements.feedsContainer.appendChild(feedEl);
-//   });
-
-//   initialState.posts.forEach((post) => {
-//     const postEl = document.createElement("div");
-//     const linkEl = document.createElement("a");
-//     linkEl.href = post.link;
-//     linkEl.textContent = post.title;
-//     postEl.appendChild(linkEl);
-//     elements.postsContainer.appendChild(postEl);
-//   });
-// }
 const renderFeedsList = (feeds, elements) => {
   const { feedsContainer } = elements;
   if (!feedsContainer) return;
@@ -47,9 +23,9 @@ const renderFeedsList = (feeds, elements) => {
         <p class="card-text">${feed.description}</p>
       </div>
     </div>
-  `
+  `,
     )
-    .join("");
+    .join('');
 
   feedsContainer.innerHTML = `
     <div class="card border-0">
@@ -82,12 +58,8 @@ const renderPostsList = (posts, elements, state) => {
       const {
         uiState: { readPosts },
       } = state;
-      // const test = state.uiState.readPosts
-      console.log("readPosts", readPosts);
       const isRead = readPosts.includes(post.id);
-      console.log(isRead);
-      const titleClass = isRead ? "fw-normal" : "fw-bold";
-      console.log(titleClass);
+      const titleClass = isRead ? 'fw-normal' : 'fw-bold';
 
       return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
@@ -100,7 +72,7 @@ const renderPostsList = (posts, elements, state) => {
     </div>
     `;
     })
-    .join("");
+    .join('');
 
   postsContainer.innerHTML = `
     <div class="card border-0">
@@ -116,19 +88,11 @@ const renderPostsList = (posts, elements, state) => {
 
 const renderModal = (state) => {
   if (!state.uiState.modal.isOpen) return;
-  const modalTitle = document.querySelector(".modal-title");
-  // console.log(modalTitle)
-  const modalBody = document.querySelector(".modal-body");
-  // console.log(modalBody)
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
   const postIdForModal = state.uiState.modal.postId;
-  // console.log("postIdForModal", postIdForModal);
-  // console.log("state.uiState.modal.postId", state.uiState.modal.postId);
   const postForModal = state.posts.find((post) => post.id === postIdForModal);
-  // console.log(postForModal);
-  const { title: postTitleForModal, description: postDescriptionForModal } =
-    postForModal;
-  // console.log(postTitleForModal)
-  // console.log(postDescriptionForModal)
+  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
   modalTitle.textContent = postTitleForModal;
   modalBody.textContent = postDescriptionForModal.textContent;
 };
@@ -137,48 +101,51 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
   const { feedbackElement, urlInput, submitButton } = elements;
 
   switch (path) {
-    case "addingUrlProcess.processState":
-      if (value === "loading") {
+    case 'addingUrlProcess.processState':
+      if (value === 'loading') {
         submitButton.disabled = true;
 
-        urlInput.classList.remove("is-invalid");
-        feedbackElement.textContent = "";
+        urlInput.classList.remove('is-invalid');
+        feedbackElement.textContent = '';
       }
-      if (value === "added") {
+      if (value === 'added') {
         submitButton.disabled = false;
 
-        urlInput.classList.remove("is-invalid");
+        urlInput.classList.remove('is-invalid');
 
-        feedbackElement.textContent = i18nextInstance.t("validFeedback");
-        feedbackElement.classList.remove("text-danger");
-        feedbackElement.classList.add("text-success");
-        urlInput.value = "";
+        feedbackElement.textContent = i18nextInstance.t('validFeedback');
+        feedbackElement.classList.remove('text-danger');
+        feedbackElement.classList.add('text-success');
+        urlInput.value = '';
         renderFeedsList(initialState.feeds, elements);
         renderPostsList(initialState.posts, elements, initialState);
       }
       break;
-    case "form.errors":
+    case 'form.errors': {
       const errorKey = value.key;
 
       if (!errorKey) {
-        feedbackElement.textContent = "";
-        feedbackElement.classList.remove("text-danger", "text-success");
-        urlInput.classList.remove("is-invalid");
+        feedbackElement.textContent = '';
+        feedbackElement.classList.remove('text-danger', 'text-success');
+        urlInput.classList.remove('is-invalid');
         break;
       }
 
-      urlInput.classList.add("is-invalid");
+      urlInput.classList.add('is-invalid');
       feedbackElement.textContent = i18nextInstance.t(errorKey);
-      feedbackElement.classList.remove("text-success");
-      feedbackElement.classList.add("text-danger");
+      feedbackElement.classList.remove('text-success');
+      feedbackElement.classList.add('text-danger');
+      break;
+    }
+    case 'uiState.modal.isOpen':
+      renderModal(initialState);
       break;
 
-    case "uiState.modal.isOpen":
-      renderModal(initialState);
-    case "uiState.readPosts":
+    case 'uiState.readPosts':
       renderPostsList(initialState.posts, elements, initialState);
       break;
+
     default:
-      break;
+      throw new Error('Что то пошло не так!');
   }
 };
