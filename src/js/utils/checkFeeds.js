@@ -21,7 +21,7 @@ const checkFeeds = (state) => {
         const items = doc.querySelectorAll('item');
 
         const existingIds = posts.map((p) => p.id);
-        const feedId = feeds[feedIndex].id; 
+        const feedId = feeds[feedIndex].id;
 
         items.forEach((item) => {
           const guid = item.querySelector('guid')?.textContent?.trim();
