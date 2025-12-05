@@ -5,7 +5,7 @@ export default {
     errors: {
       required: 'Это поле обязательно для заполнения',
       invalidUrl: 'Ссылка должна быть валидным URL',
-      linkExists: 'Ссылка уже существует',
+      linkExists: 'RSS уже существует',
       notRSS: 'Ресурс не содержит валидный RSS',
     },
   },
