@@ -7,6 +7,6 @@ export default (url) => axios
     )}`,
   )
   .then((res) => res.data.contents)
-  .catch((err) => {
-    throw new Error(`Ошибка при скачивании RSS: ${err.message}`);
+  .catch(() => {
+    throw new Error('Ошибка сети');
   });
