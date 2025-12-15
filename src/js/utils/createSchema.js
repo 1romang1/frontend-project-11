@@ -38,13 +38,9 @@ export default (validatedUrl) => yup.object({
     .notOneOf(validatedUrl)
     .test('is-rss', { key: 'errors.notRSS' }, (value) => {
       if (!value) return false;
+      // Используем оригинальную isRSS
       return isRSS(value)
-        .then(() => true)
-        .catch((err) => {
-          if (err.message === 'errors.network') {
-            throw err;
-          }
-          return false;
-        });
+        .then(() => true) // если парсинг удался — всё ок
+        .catch(() => false); // если ошибка — не RSS
     }),
 });

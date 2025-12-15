@@ -132,11 +132,7 @@ export default () => {
         watchedState.addingUrlProcess.processState = 'added';
       })
       .catch((err) => {
-        if (err instanceof yup.ValidationError) {
-          watchedState.form.errors = err.message;
-        } else {
-          watchedState.form.errors = 'errors.network';
-        }
+        watchedState.form.errors = err.message;
         watchedState.addingUrlProcess.processState = 'error';
       });
   });
