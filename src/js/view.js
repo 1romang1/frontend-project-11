@@ -120,6 +120,10 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
         renderFeedsList(initialState.feeds, elements);
         renderPostsList(initialState.posts, elements, initialState);
       }
+      if (value === 'error') {
+        submitButton.disabled = false;
+        urlInput.value = '';
+      }
       break;
     case 'form.errors': {
       const errorKey = value.key;
