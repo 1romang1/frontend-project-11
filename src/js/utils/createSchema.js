@@ -26,7 +26,7 @@ const isRSS = (url) => fetchRSS(url).then((data) => {
     return parseRSS(data);
   } catch (err) {
     console.error('Ошибка парсинга:', err.message);
-    throw new Error('errors.notRSS');
+    throw new Error('errors.network');
   }
 });
 
