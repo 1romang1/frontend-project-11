@@ -10,7 +10,7 @@ const parseRSS = (data) => {
   const isAtom = doc.querySelector('feed');
 
   if (!isRss && !isAtom) {
-    throw new Error('Not RSS');
+    throw new Error('errors.notRSS');
   }
 
   return true;
