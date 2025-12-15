@@ -8,5 +8,7 @@ export default (url) => axios
   )
   .then((res) => res.data.contents)
   .catch(() => {
-    throw new Error({ key: 'errors.network' });
+    const error = new Error('Network error');
+    error.key = 'errors.network';
+    throw error;
   });
