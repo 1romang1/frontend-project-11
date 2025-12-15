@@ -4,7 +4,7 @@ export default (data) => {
 
   const parseError = doc.getElementsByTagName('parsererror');
   if (parseError.length > 0) {
-    throw new Error(parseError[0].textContent); // разобраться с текстом ошибки
+    throw new Error('errors.notRSS'); // разобраться с текстом ошибки
   }
   return doc;
 };

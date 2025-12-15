@@ -126,7 +126,7 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
       }
       break;
     case 'form.errors': {
-      const errorKey = value.key;
+      const errorKey = value.key || value;
 
       if (!errorKey) {
         feedbackElement.textContent = '';
