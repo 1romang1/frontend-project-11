@@ -132,7 +132,8 @@ export default () => {
         watchedState.addingUrlProcess.processState = 'added';
       })
       .catch((err) => {
-        watchedState.form.errors = err.message;
+        const errorObject = err.message ?? err;
+        watchedState.form.errors = errorObject;
         watchedState.addingUrlProcess.processState = 'error';
       });
   });
