@@ -1,6 +1,6 @@
-import '../scss/styles.scss'
+import './scss/styles.scss'
 import 'bootstrap'
 
-import init from './init.js'
+import init from './js/init.js'
 
 init()
