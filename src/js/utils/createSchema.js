@@ -17,9 +17,9 @@ const parseRSS = (data) => {
 }
 
 // Проверка, является ли URL RSS
-const isRSS = (url) => fetchRSS(url).then((data) => parseRSS(data))
+const isRSS = url => fetchRSS(url).then(data => parseRSS(data))
 
-export default (validatedUrl) => yup.object({
+export default validatedUrl => yup.object({
   url: yup
     .string()
     .url()

@@ -4,7 +4,7 @@ import parseXML from './parseXML.js'
 const checkFeeds = (state) => {
   const { addedUrls, posts, feeds } = state
 
-  const feedPromises = addedUrls.map((url) => fetchRSS(url))
+  const feedPromises = addedUrls.map(url => fetchRSS(url))
 
   Promise.allSettled(feedPromises)
     .then((results) => {
@@ -19,7 +19,7 @@ const checkFeeds = (state) => {
 
         const items = doc.querySelectorAll('item')
 
-        const existingIds = posts.map((p) => p.id)
+        const existingIds = posts.map(p => p.id)
         const feedId = feeds[feedIndex].id
 
         items.forEach((item) => {

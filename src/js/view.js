@@ -16,7 +16,7 @@ const renderFeedsList = (feeds, elements) => {
 
   const feedsHtml = feeds
     .map(
-      (feed) => `
+      feed => `
     <div class="card mb-3">
       <div class="card-body">
         <h3 class="card-title h6">${feed.title}</h3>
@@ -91,7 +91,7 @@ const renderModal = (state) => {
   const modalTitle = document.querySelector('.modal-title')
   const modalBody = document.querySelector('.modal-body')
   const postIdForModal = state.uiState.modal.postId
-  const postForModal = state.posts.find((post) => post.id === postIdForModal)
+  const postForModal = state.posts.find(post => post.id === postIdForModal)
   const { title: postTitleForModal, description: postDescriptionForModal } = postForModal
   modalTitle.textContent = postTitleForModal
   modalBody.textContent = postDescriptionForModal.textContent
