@@ -71,7 +71,7 @@ export default () => {
     render(elements, initialState, i18nextInstance),
   )
 
-  elements.postsContainer.addEventListener('click', e => {
+  elements.postsContainer.addEventListener('click', (e) => {
     const btn = e.target.closest('button')
     if (!btn) return
     const { postId } = btn.dataset
@@ -83,7 +83,7 @@ export default () => {
     }
   })
 
-  elements.form.addEventListener('submit', e => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault()
 
     const urlInputValue = elements.urlInput.value
@@ -100,7 +100,7 @@ export default () => {
 
         return fetchRSS(watchedState.form.fields.url)
       })
-      .then(contents => {
+      .then((contents) => {
         const xmlDoc = parseXML(contents)
         const channel = xmlDoc.querySelector('channel')
         const channelTitle = channel.querySelector('title')
@@ -111,7 +111,7 @@ export default () => {
           description: channelDescription.textContent,
         })
         const items = xmlDoc.querySelectorAll('item')
-        items.forEach(item => {
+        items.forEach((item) => {
           const itemTitle = item.querySelector('title')
           const itemLink = item.querySelector('link')
           const itemId = item.querySelector('guid')
@@ -131,7 +131,7 @@ export default () => {
 
         watchedState.addingUrlProcess.processState = 'added'
       })
-      .catch(err => {
+      .catch((err) => {
         watchedState.form.errors = err.message
         watchedState.addingUrlProcess.processState = 'error'
       })
