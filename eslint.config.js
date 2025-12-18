@@ -35,7 +35,7 @@ export default [
       '@stylistic/no-trailing-spaces': 'error',
       '@stylistic/eol-last': ['error', 'always'],
       '@stylistic/brace-style': ['error', '1tbs'],
-      '@stylistic/arrow-parens': ['error', 'always'],
+      '@stylistic/arrow-parens': ['error', 'as-needed'],
 
       // ← ИЗМЕНИТЬ ТУТ!
       '@stylistic/padded-blocks': ['error', 'never'],
