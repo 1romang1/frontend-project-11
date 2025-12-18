@@ -1,6 +1,6 @@
 const renderFeedsList = (feeds, elements) => {
-  const { feedsContainer } = elements;
-  if (!feedsContainer) return;
+  const { feedsContainer } = elements
+  if (!feedsContainer) return
 
   if (feeds.length === 0) {
     feedsContainer.innerHTML = `
@@ -10,8 +10,8 @@ const renderFeedsList = (feeds, elements) => {
           <p class="card-text text-muted">Пока нет RSS потоков. Добавьте первый!</p>
         </div>
       </div>
-    `;
-    return;
+    `
+    return
   }
 
   const feedsHtml = feeds
@@ -25,7 +25,7 @@ const renderFeedsList = (feeds, elements) => {
     </div>
   `,
     )
-    .join('');
+    .join('')
 
   feedsContainer.innerHTML = `
     <div class="card border-0">
@@ -34,12 +34,12 @@ const renderFeedsList = (feeds, elements) => {
         ${feedsHtml}
       </div>
     </div>
-  `;
-};
+  `
+}
 
 const renderPostsList = (posts, elements, state) => {
-  const { postsContainer } = elements;
-  if (!postsContainer) return;
+  const { postsContainer } = elements
+  if (!postsContainer) return
 
   if (posts.length === 0) {
     postsContainer.innerHTML = `
@@ -49,17 +49,17 @@ const renderPostsList = (posts, elements, state) => {
           <p class="card-text text-muted">Пока нет постов. Новые посты будут появляться автоматически.</p>
         </div>
       </div>
-    `;
-    return;
+    `
+    return
   }
 
   const postsHtml = posts
     .map((post) => {
       const {
         uiState: { readPosts },
-      } = state;
-      const isRead = readPosts.includes(post.id);
-      const titleClass = isRead ? 'fw-normal' : 'fw-bold';
+      } = state
+      const isRead = readPosts.includes(post.id)
+      const titleClass = isRead ? 'fw-normal' : 'fw-bold'
 
       return `
     <div class="list-group-item d-flex justify-content-between align-items-start border-0">
@@ -70,9 +70,9 @@ const renderPostsList = (posts, elements, state) => {
         Просмотр
       </button>
     </div>
-    `;
+    `
     })
-    .join('');
+    .join('')
 
   postsContainer.innerHTML = `
     <div class="card border-0">
@@ -83,73 +83,73 @@ const renderPostsList = (posts, elements, state) => {
         </div>
       </div>
     </div>
-  `;
-};
+  `
+}
 
 const renderModal = (state) => {
-  if (!state.uiState.modal.isOpen) return;
-  const modalTitle = document.querySelector('.modal-title');
-  const modalBody = document.querySelector('.modal-body');
-  const postIdForModal = state.uiState.modal.postId;
-  const postForModal = state.posts.find((post) => post.id === postIdForModal);
-  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal;
-  modalTitle.textContent = postTitleForModal;
-  modalBody.textContent = postDescriptionForModal.textContent;
-};
+  if (!state.uiState.modal.isOpen) return
+  const modalTitle = document.querySelector('.modal-title')
+  const modalBody = document.querySelector('.modal-body')
+  const postIdForModal = state.uiState.modal.postId
+  const postForModal = state.posts.find((post) => post.id === postIdForModal)
+  const { title: postTitleForModal, description: postDescriptionForModal } = postForModal
+  modalTitle.textContent = postTitleForModal
+  modalBody.textContent = postDescriptionForModal.textContent
+}
 
 export default (elements, initialState, i18nextInstance) => (path, value) => {
-  const { feedbackElement, urlInput, submitButton } = elements;
+  const { feedbackElement, urlInput, submitButton } = elements
 
   switch (path) {
     case 'addingUrlProcess.processState':
       if (value === 'loading') {
-        submitButton.disabled = true;
+        submitButton.disabled = true
 
-        urlInput.classList.remove('is-invalid');
-        feedbackElement.textContent = '';
+        urlInput.classList.remove('is-invalid')
+        feedbackElement.textContent = ''
       }
       if (value === 'added') {
-        submitButton.disabled = false;
+        submitButton.disabled = false
 
-        urlInput.classList.remove('is-invalid');
+        urlInput.classList.remove('is-invalid')
 
-        feedbackElement.textContent = i18nextInstance.t('validFeedback');
-        feedbackElement.classList.remove('text-danger');
-        feedbackElement.classList.add('text-success');
-        urlInput.value = '';
-        renderFeedsList(initialState.feeds, elements);
-        renderPostsList(initialState.posts, elements, initialState);
+        feedbackElement.textContent = i18nextInstance.t('validFeedback')
+        feedbackElement.classList.remove('text-danger')
+        feedbackElement.classList.add('text-success')
+        urlInput.value = ''
+        renderFeedsList(initialState.feeds, elements)
+        renderPostsList(initialState.posts, elements, initialState)
       }
       if (value === 'error') {
-        submitButton.disabled = false;
-        urlInput.value = '';
+        submitButton.disabled = false
+        urlInput.value = ''
       }
-      break;
+      break
     case 'form.errors': {
-      const errorKey = value.key || value;
+      const errorKey = value.key || value
 
       if (!errorKey) {
-        feedbackElement.textContent = '';
-        feedbackElement.classList.remove('text-danger', 'text-success');
-        urlInput.classList.remove('is-invalid');
-        break;
+        feedbackElement.textContent = ''
+        feedbackElement.classList.remove('text-danger', 'text-success')
+        urlInput.classList.remove('is-invalid')
+        break
       }
 
-      urlInput.classList.add('is-invalid');
-      feedbackElement.textContent = i18nextInstance.t(errorKey);
-      feedbackElement.classList.remove('text-success');
-      feedbackElement.classList.add('text-danger');
-      break;
+      urlInput.classList.add('is-invalid')
+      feedbackElement.textContent = i18nextInstance.t(errorKey)
+      feedbackElement.classList.remove('text-success')
+      feedbackElement.classList.add('text-danger')
+      break
     }
     case 'uiState.modal.isOpen':
-      renderModal(initialState);
-      break;
+      renderModal(initialState)
+      break
 
     case 'uiState.readPosts':
-      renderPostsList(initialState.posts, elements, initialState);
-      break;
+      renderPostsList(initialState.posts, elements, initialState)
+      break
 
     default:
-      console.log(path);
+      throw new Error(`Unknown path: '${path}'!`)
   }
-};
+}

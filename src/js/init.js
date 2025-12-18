@@ -1,13 +1,13 @@
-import onChange from 'on-change';
-import * as yup from 'yup';
-import i18next from 'i18next';
-import { uniqueId } from 'lodash';
-import fetchRSS from './utils/fetchRSS.js';
-import parseXML from './utils/parseXML.js';
-import render from './view.js';
-import resources from '../locales/index.js';
-import createSchema from './utils/createSchema.js';
-import checkFeeds from './utils/checkFeeds.js';
+import onChange from 'on-change'
+import * as yup from 'yup'
+import i18next from 'i18next'
+import { uniqueId } from 'lodash'
+import fetchRSS from './utils/fetchRSS.js'
+import parseXML from './utils/parseXML.js'
+import render from './view.js'
+import resources from '../locales/index.js'
+import createSchema from './utils/createSchema.js'
+import checkFeeds from './utils/checkFeeds.js'
 
 export default () => {
   const initialState = {
@@ -30,7 +30,7 @@ export default () => {
         postId: null,
       },
     },
-  };
+  }
 
   const elements = {
     form: document.querySelector('form'),
@@ -39,9 +39,9 @@ export default () => {
     feedbackElement: document.querySelector('.feedback'),
     postsContainer: document.querySelector('.posts'),
     feedsContainer: document.querySelector('.feeds'),
-  };
+  }
 
-  const i18nextInstance = i18next.createInstance();
+  const i18nextInstance = i18next.createInstance()
   i18nextInstance
     .init({
       lng: 'ru',
@@ -63,77 +63,77 @@ export default () => {
             key: 'errors.linkExists',
           }),
         },
-      });
-    });
+      })
+    })
 
   const watchedState = onChange(
     initialState,
     render(elements, initialState, i18nextInstance),
-  );
+  )
 
   elements.postsContainer.addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    const { postId } = btn.dataset;
-    if (!postId) return;
+    const btn = e.target.closest('button')
+    if (!btn) return
+    const { postId } = btn.dataset
+    if (!postId) return
     if (!watchedState.uiState.readPosts.includes(postId)) {
-      watchedState.uiState.readPosts.push(postId);
-      watchedState.uiState.modal.postId = postId;
-      watchedState.uiState.modal.isOpen = true;
+      watchedState.uiState.readPosts.push(postId)
+      watchedState.uiState.modal.postId = postId
+      watchedState.uiState.modal.isOpen = true
     }
-  });
+  })
 
   elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const urlInputValue = elements.urlInput.value;
-    watchedState.form.fields.url = urlInputValue;
+    const urlInputValue = elements.urlInput.value
+    watchedState.form.fields.url = urlInputValue
 
-    const schema = createSchema(watchedState.addedUrls);
+    const schema = createSchema(watchedState.addedUrls)
 
     schema
       .validate(watchedState.form.fields)
       .then(() => {
-        watchedState.addingUrlProcess.processState = 'loading';
-        watchedState.addedUrls.push(urlInputValue);
-        watchedState.form.errors = {};
+        watchedState.addingUrlProcess.processState = 'loading'
+        watchedState.addedUrls.push(urlInputValue)
+        watchedState.form.errors = {}
 
-        return fetchRSS(watchedState.form.fields.url);
+        return fetchRSS(watchedState.form.fields.url)
       })
       .then((contents) => {
-        const xmlDoc = parseXML(contents);
-        const channel = xmlDoc.querySelector('channel');
-        const channelTitle = channel.querySelector('title');
-        const channelDescription = channel.querySelector('description');
+        const xmlDoc = parseXML(contents)
+        const channel = xmlDoc.querySelector('channel')
+        const channelTitle = channel.querySelector('title')
+        const channelDescription = channel.querySelector('description')
         watchedState.feeds.push({
           id: uniqueId('feed_'),
           title: channelTitle.textContent,
           description: channelDescription.textContent,
-        });
-        const items = xmlDoc.querySelectorAll('item');
+        })
+        const items = xmlDoc.querySelectorAll('item')
         items.forEach((item) => {
-          const itemTitle = item.querySelector('title');
-          const itemLink = item.querySelector('link');
-          const itemId = item.querySelector('guid');
-          const itemDescr = item.querySelector('description');
+          const itemTitle = item.querySelector('title')
+          const itemLink = item.querySelector('link')
+          const itemId = item.querySelector('guid')
+          const itemDescr = item.querySelector('description')
           watchedState.posts.push({
             feedId: watchedState.feeds[watchedState.feeds.length - 1].id,
             id: itemId.textContent,
             title: itemTitle.textContent,
             link: itemLink.textContent,
             description: itemDescr,
-          });
+          })
 
           if (watchedState.feeds.length === 1) {
-            checkFeeds(watchedState);
+            checkFeeds(watchedState)
           }
-        });
+        })
 
-        watchedState.addingUrlProcess.processState = 'added';
+        watchedState.addingUrlProcess.processState = 'added'
       })
       .catch((err) => {
-        watchedState.form.errors = err.message;
-        watchedState.addingUrlProcess.processState = 'error';
-      });
-  });
-};
+        watchedState.form.errors = err.message
+        watchedState.addingUrlProcess.processState = 'error'
+      })
+  })
+}

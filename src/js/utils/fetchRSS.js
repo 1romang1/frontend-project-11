@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export default (url) => axios
   .get(
@@ -8,5 +8,5 @@ export default (url) => axios
   )
   .then((res) => res.data.contents)
   .catch(() => {
-    throw new Error('errors.network');
-  });
+    throw new Error('errors.network')
+  })

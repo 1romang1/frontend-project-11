@@ -1,10 +1,10 @@
 export default (data) => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(data, 'application/xml');
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(data, 'application/xml')
 
-  const parseError = doc.getElementsByTagName('parsererror');
+  const parseError = doc.getElementsByTagName('parsererror')
   if (parseError.length > 0) {
-    throw new Error('errors.notRSS'); // разобраться с текстом ошибки
+    throw new Error('errors.notRSS') // разобраться с текстом ошибки
   }
-  return doc;
-};
+  return doc
+}

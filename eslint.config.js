@@ -1,61 +1,59 @@
-import globals from 'globals';
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
-import pluginJs from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
-
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: pluginJs.configs.recommended,
-});
+import globals from 'globals'
+import pluginJs from '@eslint/js'
+import pluginImport from 'eslint-plugin-import'
+import stylistic from '@stylistic/eslint-plugin'
 
 export default [
   {
-    ignores: ['public/', 'sandbox.js'],
-  },
-  {
     languageOptions: {
       globals: {
-        ...globals.node,
-        ...globals.jest,
         ...globals.browser,
+        ...globals.node,
       },
-      parserOptions: {
-        // Eslint doesn't supply ecmaVersion in `parser.js` `context.parserOptions`
-        // This is required to avoid ecmaVersion < 2015 error or 'import' / 'export' error
-        ecmaVersion: 'latest',
-        sourceType: 'module',
-      },
-    },
-    plugins: { import: importPlugin },
-    rules: {
-      ...importPlugin.configs.recommended.rules,
+      ecmaVersion: 2025,
+      sourceType: 'module',
     },
   },
-  ...compat.extends('airbnb-base'),
+
+  pluginJs.configs.recommended,
+
   {
+    plugins: {
+      'import': pluginImport,
+      '@stylistic': stylistic,
+    },
     rules: {
-      'no-underscore-dangle': [
-        'error',
-        {
-          allow: ['__filename', '__dirname'],
+      'import/extensions': 'off',
+      'import/no-unresolved': 'off',
+      'no-console': 'warn',
+      'no-unused-vars': 'warn',
+
+      '@stylistic/quotes': ['error', 'single'],
+      '@stylistic/semi': ['error', 'never'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/no-trailing-spaces': 'error',
+      '@stylistic/eol-last': ['error', 'always'],
+      '@stylistic/brace-style': ['error', '1tbs'],
+      '@stylistic/arrow-parens': ['error', 'always'],
+
+      // ← ИЗМЕНИТЬ ТУТ!
+      '@stylistic/padded-blocks': ['error', 'never'],
+
+      '@stylistic/no-multi-spaces': 'error',
+      '@stylistic/no-multiple-empty-lines': ['error', { max: 1 }],
+      '@stylistic/spaced-comment': ['error', 'always'],
+
+      // ← ДОБАВИТЬ!
+      '@stylistic/quote-props': ['error', 'consistent-as-needed'],
+      // ← ДОБАВИТЬ!
+    },
+    settings: {
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx'],
         },
-      ],
-      'import/extensions': [
-        'error',
-        {
-          js: 'always',
-        },
-      ],
-      'import/no-named-as-default': 'off',
-      'import/no-named-as-default-member': 'off',
-      'no-console': 'off',
-      'import/no-extraneous-dependencies': 'off',
+      },
     },
   },
-];
+]
