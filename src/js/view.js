@@ -150,6 +150,6 @@ export default (elements, initialState, i18nextInstance) => (path, value) => {
       break
 
     default:
-      throw new Error(`Unknown path: '${path}'!`)
+      break
   }
 }
